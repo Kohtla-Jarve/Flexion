@@ -10,10 +10,10 @@ public class Converter {
     private static final double RankineMIN = 0;
     // below volume constants
     private static final double LiterToUsTableSpoon = 67.628045; // "t"
-    private static final double LiterToUsCups = 4.22675; // "c"
+    private static final double LiterToUsCups = 4.22675; // "c",  ambiguous values US cup vs. US legal cap: 4.16667
     private static final double LiterToUsGallon = 0.264172; // "g"
     private static final double LiterToCubicFeet = 0.0353147;  // "f"
-    private static final double LiterToCubicInch = 61.0237; // "i"
+    private static final double LiterToCubicInch = 61.023744; // "i"
 
     // due to functional similarity both temperature & volume share variable naming convention
     private static double teacherNumeric;
@@ -26,17 +26,14 @@ public class Converter {
         if (args.length > 0 && args[0].equals("help") ) {
             help();
         }
-
         Scanner scanner = new Scanner(System.in);
-//        System.out.println("Enter arguments, separated by spaces: ");
-//        String input = scanner.nextLine();
-//        String trimmedText = removeExtraSpaces(input);
-//        System.out.println(trimmedText);
-//        String[] split = trimmedText.split(" ");
-        String [] split = {"t", "-450", "f", "k", "5.3722"};
-    //    String [] split = {"v","100.11", "l", "g", "100.11"};
-        if(validateInput(split)) {
-            compute(split);
+        System.out.println("Enter arguments, separated by spaces: ");
+        String input = scanner.nextLine();
+        String trimmedText = removeExtraSpaces(input);
+        String[] arr = trimmedText.split(" ");
+        if(validateInput(arr)) {
+
+            compute(arr);
         } else {
             System.out.println("invalid");
         }
@@ -47,28 +44,29 @@ public class Converter {
         System.exit(0);
     }
 
-    private static void compute(String[] split) {
-        switch(split[0]) {
+    private static void compute(String[] arr) {
+        switch(arr[0]) {
             case "t":
-                computeTemperature(split);
+                computeTemperature(arr);
                 break;
              case "v":
-                 computeVolume(split);
+                 computeVolume(arr);
                  break;
              default:
-                 System.out.println("neither t or v");
+                 System.out.println("invalid");
                  break;
             }
         }
 
-    private static void computeVolume(String[] split) {
-        teacherNumeric = Double.parseDouble(split[1]);
-        studentNumeric = Double.parseDouble(split[4]);
+
+    private static void computeVolume(String[] arr) {
+        teacherNumeric = Double.parseDouble(arr[1]);
+        studentNumeric = Double.parseDouble(arr[4]);
         // ensure volume patterns match
-        if(!LTICFG.contains(split[2]) || !LTICFG.contains(split[3])) {
-            System.out.println("invalid volume input");
+        if(!LTICFG.contains(arr[2]) || !LTICFG.contains(arr[3])) {
+            System.out.println("invalid");
         } else {
-            switch(split[2].concat(split[3])) {
+            switch(arr[2].concat(arr[3])) {
                 case "lt":
                     convertedNumeric = literToUsTableSpoon(teacherNumeric);
                     break;
@@ -84,26 +82,97 @@ public class Converter {
                 case "lg":
                     convertedNumeric = literToUsGallon(teacherNumeric);
                     break;
-
+                case "tl":
+                    convertedNumeric = 1 / literToUsTableSpoon(teacherNumeric);
+                    break;
+                case "ti":
+                    convertedNumeric = literToCubicInch(1 / literToUsTableSpoon(teacherNumeric));
+                    break;
+                case "tc":
+                    convertedNumeric = literToUsCups(1 / literToUsTableSpoon(teacherNumeric));
+                    break;
+                case "tf":
+                    convertedNumeric = literToCubicFeet(1 / literToUsTableSpoon(teacherNumeric));
+                    break;
+                case "tg":
+                    convertedNumeric = literToUsGallon(1 / literToUsTableSpoon(teacherNumeric));
+                    break;
+                case "il":
+                    convertedNumeric = 1 / literToCubicInch(teacherNumeric);
+                    break;
+                case "it":
+                    convertedNumeric = literToUsTableSpoon(1 / literToCubicInch(teacherNumeric));
+                    break;
+                case "ic":
+                    convertedNumeric = literToUsCups(1 / literToCubicInch(teacherNumeric));
+                    break;
+                case "if":
+                    convertedNumeric = literToCubicFeet(1 / literToCubicInch(teacherNumeric));
+                    break;
+                case "ig":
+                    convertedNumeric = literToUsGallon(1 / literToCubicInch(teacherNumeric));
+                    break;
+                case "cl":
+                    convertedNumeric = 1 / literToUsCups(teacherNumeric);
+                    break;
+                case "ct":
+                    convertedNumeric = literToUsTableSpoon(1 / literToUsCups(teacherNumeric));
+                    break;
+                case "ci":
+                    convertedNumeric = literToCubicInch(1 / literToUsCups(teacherNumeric));
+                    break;
+                case "cf":
+                    convertedNumeric = literToCubicFeet(1 / literToUsCups(teacherNumeric));
+                    break;
+                case "cg":
+                    convertedNumeric = literToUsGallon(1 / literToUsCups(teacherNumeric));
+                    break;
+                case "fl":
+                    convertedNumeric = 1 / literToCubicFeet(teacherNumeric);
+                    break;
+                case "ft":
+                    convertedNumeric = literToUsTableSpoon(1 / literToCubicFeet(teacherNumeric));
+                    break;
+                case "fi":
+                    convertedNumeric = literToCubicInch(1 / literToCubicFeet(teacherNumeric));
+                    break;
+                case "fc":
+                    convertedNumeric = literToUsCups(1 / literToCubicFeet(teacherNumeric));
+                    break;
+                case "fg":
+                    convertedNumeric = literToUsGallon(1 / literToCubicFeet(teacherNumeric));
+                    break;
+                case "gl":
+                    convertedNumeric = 1 / literToUsGallon(teacherNumeric);
+                    break;
+                case "gt":
+                    convertedNumeric = literToUsTableSpoon(1 / literToUsGallon(teacherNumeric));
+                    break;
+                case "gi":
+                    convertedNumeric = literToCubicInch(1 / literToUsGallon(teacherNumeric));
+                    break;
+                case "gc":
+                    convertedNumeric = literToUsCups(1 / literToUsGallon(teacherNumeric));
+                    break;
+                case "gf":
+                    convertedNumeric = literToCubicFeet(1 / literToUsGallon(teacherNumeric));
+                    break;
                 default:
-                    System.out.println("unknown volume conversion " + split[2] + split[3]);
+                    System.out.println("invalid");
                     break;
             }
-            System.out.println("tempConverted from " + split[2] + " to " + split[3] + " " + convertedNumeric);
-            System.out.println(roundToTheTenthsPlace(convertedNumeric) + " == " + roundToTheTenthsPlace(studentNumeric));
             System.out.println(roundToTheTenthsPlace(convertedNumeric) == roundToTheTenthsPlace(studentNumeric) ? "correct" : "incorrect");
         }
-
     }
 
-    private static void computeTemperature(String[] split) {
-        teacherNumeric = Double.parseDouble(split[1]);
-        studentNumeric = Double.parseDouble(split[4]);
+    private static void computeTemperature(String[] arr) {
+        teacherNumeric = Double.parseDouble(arr[1]);
+        studentNumeric = Double.parseDouble(arr[4]);
         // ensure temperature patterns match
-        if(!CFKR.contains(split[2]) || !CFKR.contains(split[3])) {
-            System.out.println("invalid temperature input");
+        if(!CFKR.contains(arr[2]) || !CFKR.contains(arr[3])) {
+            System.out.println("invalid");
         } else {
-            switch(split[2].concat(split[3])) {
+            switch(arr[2].concat(arr[3])) {
                 case "ck":
                     convertedNumeric = celsiusToKelvin(teacherNumeric);
                     break;
@@ -141,11 +210,9 @@ public class Converter {
                     convertedNumeric = celsiusToKelvin(fahrenheitToCelsius(teacherNumeric));
                     break;
                 default:
-                    System.out.println("unknown temperature conversion " + split[2] + split[3]);
+                    System.out.println("unknown temperature conversion " + arr[2] + arr[3]);
                     break;
             }
-            System.out.println("convertedNumeric from " + split[2] + " to " + split[3] + " " + convertedNumeric);
-            System.out.println(roundToTheTenthsPlace(convertedNumeric) + " == " + roundToTheTenthsPlace(studentNumeric));
             System.out.println(roundToTheTenthsPlace(convertedNumeric) == roundToTheTenthsPlace(studentNumeric) ? "correct" : "incorrect");
         }
     }
@@ -158,26 +225,26 @@ public class Converter {
         return text.replaceAll("\\s+", " ").trim();
     }
 
-    private static boolean validateInput(String [] split) {
+    private static boolean validateInput(String [] arr) {
         double teacher;
         double student;
-        if (split.length != 5) return false; // check number of user arguments
-        if (!"t".equals(split[0]) && !"v".equals(split[0])) return false; // high level unit validation
-        if (split[2].equals(split[3])) return false;  // source and destination must be distinct
+        if (arr.length != 5) return false; // check number of user arguments
+        if (!"t".equals(arr[0]) && !"v".equals(arr[0])) return false; // high level unit validation
+        if (arr[2].equals(arr[3])) return false;  // source and destination must be distinct
         try {
             // validate input for numeric CLI arguments
-            teacher = Double.parseDouble(split[1]);
-            student = Double.parseDouble(split[4]);
+            teacher = Double.parseDouble(arr[1]);
+            student = Double.parseDouble(arr[4]);
         } catch (NumberFormatException badUserData) {
-            System.out.println("Invalid numeric input!!! Try again: " + split[1] + " / " + split[4]);
+            System.out.println("Invalid numeric input!!! Try again: " + arr[1] + " / " + arr[4]);
             return false;
         }
         // volumes must be more than zero
-        if ("v".equals(split[0]) && (teacher <= 0 || student <= 0)) return false;
+        if ("v".equals(arr[0]) && (teacher <= 0 || student <= 0)) return false;
 
         // temperatures must be above theoretical minimums
-        if ("t".equals(split[0])) {
-            switch(split[2]) {
+        if ("t".equals(arr[0])) {
+            switch(arr[2]) {
                 case "c":
                     if(teacher < CelsiusMIN) return false;
                     break;
@@ -191,7 +258,7 @@ public class Converter {
                     if(teacher < RankineMIN) return false;
                     break;
                 default:
-                    System.out.println("improper teacher temperature input ");
+                    System.out.println("invalid");
                     break;
             }
         }
